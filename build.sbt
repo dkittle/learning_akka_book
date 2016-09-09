@@ -17,6 +17,5 @@ libraryDependencies ++= Seq(
 unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/test" )  
 
 resolvers ++= Seq(
-  "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases" ,
   "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 )
