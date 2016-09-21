@@ -77,14 +77,14 @@ class PongActorSpec  extends TestKit(ActorSystem("test-system")) with ImplicitSe
       )
     }
 
-    scenario("Chain a response of Pong using flatMap") {
+    scenario("Chain a response of two dependent calls to pong using flatMap") {
       Given("a pong actor")
       When("two dependent messages sent using ask")
       val future = askPong("Ping").flatMap(x => askPong(x))
       Then("the actor should send Deja Vu")
       future.map(
         {
-          case s: String => println(s"--Received $s back using flatmap")
+          case s: String => println(s"=--Received $s back using flatmap")
         }
       )
     }
@@ -99,18 +99,26 @@ class PongActorSpec  extends TestKit(ActorSystem("test-system")) with ImplicitSe
       })
     }
 
-//    def f(msg: String) = askPong(msg).
-//      flatMap(x => askPong(x)).
-//      recover({ case e: Exception => "There was an error" })
-
-    scenario("Test our function to resolve two pong calls") {
+    scenario("Test our function to resolve two dependent pong calls") {
       Given("a pong actor")
       When("an valid message is sent using the function")
       val f = askPong("Ping").
         flatMap(x => askPong(x)).
         recover({ case e: Exception => "There was an error" })
       Then("the actor should send a valid response back")
-      assert(f.mapTo[String] == "Deja Vu")
+      assert( Await.result(f.mapTo[String], 1 second) == "Deja Vu")
+    }
+
+    scenario("Test our function to resolve two dependent pong calls using a for comprehension") {
+      Given("a pong actor")
+      When("an valid message is sent using the function")
+      val f = (for {
+        x <- askPong("Ping")
+        y <- askPong(x)
+      } yield y).
+        recover({ case e: Exception => "There was an error" })
+      Then("the actor should send a valid response back")
+      assert( Await.result(f.mapTo[String], 1 second) == "Deja Vu")
     }
 
   }
