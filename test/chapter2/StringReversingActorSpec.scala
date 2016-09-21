@@ -1,11 +1,10 @@
 package chapter2
 
 import scala.concurrent.duration._
-
 import akka.actor.ActorSystem
+import akka.actor.Status.Failure
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit}
 import org.scalatest.{BeforeAndAfterAll, FeatureSpecLike, GivenWhenThen, Matchers}
-
 import chapter2.StringReversingActor._
 
 class StringReversingActorSpec extends TestKit(ActorSystem("test-system")) with ImplicitSender
@@ -25,7 +24,7 @@ class StringReversingActorSpec extends TestKit(ActorSystem("test-system")) with 
       When("an invalid message type is sent")
       actorRef ! 42
       Then("the actor should send an error message back")
-      expectMsg(Timeout, CannotReverseException(ErrorMessage))
+      expectMsg(Timeout, Failure(CannotReverseException()))
     }
 
 

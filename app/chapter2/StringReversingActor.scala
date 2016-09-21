@@ -1,21 +1,19 @@
 package chapter2
 
-import akka.actor.{Actor, Props}
+import akka.actor.{Actor, Props, Status}
 import chapter2.StringReversingActor._
 
 class StringReversingActor extends Actor {
 
   override def receive = {
-    case _ => sender() ! CannotReverseException(ErrorMessage)
+    case _ => sender() ! Status.Failure(CannotReverseException())
   }
 
 }
 
 object StringReversingActor {
 
-  val ErrorMessage = "I cannot reverse that type"
-
-  case class CannotReverseException(message: String) extends Exception(message)
+  case class CannotReverseException() extends Exception("Cannot reverse that type")
 
   def props(): Props = { Props(classOf[StringReversingActor]) }
 
