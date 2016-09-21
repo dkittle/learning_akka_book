@@ -1,6 +1,5 @@
 package chapter2
 
-import PongActor._
 import akka.actor.{Actor, Props, Status}
 
 class PongActor(response: String) extends Actor {
