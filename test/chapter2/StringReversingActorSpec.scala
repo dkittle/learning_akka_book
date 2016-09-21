@@ -27,6 +27,21 @@ class StringReversingActorSpec extends TestKit(ActorSystem("test-system")) with 
       expectMsg(Timeout, Failure(CannotReverseException()))
     }
 
+    scenario("Get a reversed string back from the string reversing actor") {
+      Given("a string reversing actor actor")
+      When("a string message type is sent")
+      actorRef ! "foo"
+      Then("the actor should send the reversed string message back")
+      expectMsg(Timeout, "oof")
+    }
+
+    scenario("Get an empty string back from the string reversing actor") {
+      Given("a string reversing actor actor")
+      When("an empty string is sent")
+      actorRef ! ""
+      Then("the actor should send an empty string message back")
+      expectMsg(Timeout, "")
+    }
 
   }
 

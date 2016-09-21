@@ -6,6 +6,7 @@ import chapter2.StringReversingActor._
 class StringReversingActor extends Actor {
 
   override def receive = {
+    case s: String => sender() ! s.reverse
     case _ => sender() ! Status.Failure(CannotReverseException())
   }
 
