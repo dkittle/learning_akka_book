@@ -4,10 +4,9 @@ import akka.pattern.ask
 
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
-import akka.actor.{ActorSystem, Status}
+import akka.actor.{ActorSystem}
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit}
 import akka.util.Timeout
-import chapter2.PongActor._
 import org.scalatest.{BeforeAndAfterAll, FeatureSpecLike, GivenWhenThen, Matchers}
 
 import scala.concurrent.{Await, Future}
@@ -106,7 +105,7 @@ class PongActorSpec  extends TestKit(ActorSystem("test-system")) with ImplicitSe
         flatMap(x => askPong(x)).
         recover({ case e: Exception => "There was an error" })
       Then("the actor should send a valid response back")
-      assert( Await.result(f.mapTo[String], 1 second) == "Deja Vu")
+      assert( Await.result(f.mapTo[String], Tout) == "Deja Vu")
     }
 
     scenario("Test our function to resolve two dependent pong calls using a for comprehension") {
@@ -118,7 +117,7 @@ class PongActorSpec  extends TestKit(ActorSystem("test-system")) with ImplicitSe
       } yield y).
         recover({ case e: Exception => "There was an error" })
       Then("the actor should send a valid response back")
-      assert( Await.result(f.mapTo[String], 1 second) == "Deja Vu")
+      assert( Await.result(f.mapTo[String], Tout) == "Deja Vu")
     }
 
   }
