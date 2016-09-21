@@ -100,12 +100,22 @@ class PongActorSpec  extends TestKit(ActorSystem("test-system")) with ImplicitSe
 
     scenario("Test our function to resolve two dependent pong calls") {
       Given("a pong actor")
-      When("an valid message is sent using the function")
+      When("a valid message is sent using the function")
       val f = askPong("Ping").
         flatMap(x => askPong(x)).
         recover({ case e: Exception => "There was an error" })
       Then("the actor should send a valid response back")
       assert( Await.result(f.mapTo[String], Tout) == "Deja Vu")
+    }
+
+    scenario("Test our function to resolve two dependent pong calls with an error") {
+      Given("a pong actor")
+      When("an invalid message is sent using the function")
+      val f = askPong("Foo").
+        flatMap(x => askPong(x)).
+        recover({ case e: Exception => "There was an error" })
+      Then("the actor should send an error response back")
+      assert( Await.result(f.mapTo[String], Tout) == "There was an error")
     }
 
     scenario("Test our function to resolve two dependent pong calls using a for comprehension") {
