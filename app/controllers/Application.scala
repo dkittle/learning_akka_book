@@ -1,12 +1,20 @@
 package controllers
 
-import play.api._
+import javax.inject.Inject
+
+import play.api.libs.json.Json
 import play.api.mvc._
+import services.StringReversingService
 
-class Application extends Controller {
+import scala.concurrent.ExecutionContext.Implicits.global
 
-//  def index = Action {
-//    Ok(views.html.index("Your new application is ready."))
-//  }
+class Application @Inject() (stringReversalService: StringReversingService) extends Controller {
+
+  def reverseString(s: String) = Action.async { implicit request =>
+    stringReversalService.reverse(s).
+      map { s =>
+        Ok(Json.obj("status" -> s._1, "result" -> s._2))
+    }
+  }
 
 }
