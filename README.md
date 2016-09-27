@@ -16,7 +16,7 @@ appropriate.
 
 ### Going beyond
 
-We've added a REST endpoint ``/reverse` that takes a string as a path parameter and returns a JSON result with a
+We've added a REST endpoint `/reverse` that takes a string as a path parameter and returns a JSON result with a
 status code and the result of the operation (either a reversed string or an error message).
 
 A StringReversingService interacts with the actor and returns a tuple used by the controller. This service is
