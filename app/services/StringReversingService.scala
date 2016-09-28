@@ -13,10 +13,8 @@ class StringReversingService {
 
   implicit val timeout = Timeout(5 seconds)
 
-  def reverse(s: String): Future[(String, String)] = {
-    val result = StringReversingService.stringReversingActor ? s
-    result.mapTo[String].map(x => ("OK", x)).
-      recover({ case e: Exception => ("KO", e.getMessage) })
+  def reverse(s: String): Future[String] = {
+    (StringReversingService.stringReversingActor ? s).mapTo[String]
   }
 
 }

@@ -11,7 +11,7 @@ published by Packt Publishing.
 
 The code in Chapter 2 was to build a Pong actor that would return Pong if you sent it a Ping message.
 We added the ability to also handle a Pong message which would return the string Deja Vu.
-Finally, we expored (via tests) a pattern for returning either the result returned by an Actor or an error as
+Finally, we explored (via tests) a pattern for returning either the result returned by an Actor or an error as
 appropriate.
 
 ### Going beyond

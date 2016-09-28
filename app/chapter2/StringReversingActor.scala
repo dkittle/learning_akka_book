@@ -19,3 +19,4 @@ object StringReversingActor {
   def props(): Props = { Props(classOf[StringReversingActor]) }
 
 }
+

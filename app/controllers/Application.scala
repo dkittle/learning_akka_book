@@ -12,9 +12,10 @@ class Application @Inject() (stringReversalService: StringReversingService) exte
 
   def reverseString(s: String) = Action.async { implicit request =>
     stringReversalService.reverse(s).
-      map { s =>
-        Ok(Json.obj("status" -> s._1, "result" -> s._2))
-    }
+      map (s => Ok(Json.obj("status" -> "OK", "result" -> s))).
+        recover {
+          case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
+        }
   }
 
 }
