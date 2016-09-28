@@ -8,14 +8,15 @@ import services.StringReversingService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Application @Inject() (stringReversalService: StringReversingService) extends Controller {
+class Application @Inject() (stringReversingService: StringReversingService) extends Controller {
 
   def reverseString(s: String) = Action.async { implicit request =>
-    stringReversalService.reverse(s).
+    stringReversingService.reverse(s).
       map (s => Ok(Json.obj("status" -> "OK", "result" -> s))).
         recover {
           case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
         }
   }
+
 
 }
