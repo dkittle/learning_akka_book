@@ -18,5 +18,11 @@ class Application @Inject() (stringReversingService: StringReversingService) ext
         }
   }
 
-
+  def reverseAll(phrase: Seq[String]) = Action.async {
+    stringReversingService.reverseAll(phrase).
+      map (s => Ok(Json.obj("status" -> "OK", "result" -> s.mkString((","))))).
+        recover {
+          case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
+        }
+  }
 }

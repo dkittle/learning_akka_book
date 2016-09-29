@@ -22,4 +22,9 @@ status code and the result of the operation (either a reversed string or an erro
 A StringReversingService interacts with the actor and returns a tuple used by the controller. This service is
 injected into the controller.
 
+*Sample `curl` to reverse one string*
 ```curl -i http://localhost:9000/reverse/fizzbuzz```
+
+*Sample 'curl' to reverse more than one string*
+```curl -i "http://localhost:9000/reverse-all?phrase=foo&phrase=bar"```
+

@@ -17,6 +17,10 @@ class StringReversingService {
     (StringReversingService.stringReversingActor ? s).mapTo[String]
   }
 
+  def reverseAll(xs: Seq[String]): Future[Seq[String]] = {
+    Future.sequence(xs.map(x => (StringReversingService.stringReversingActor ? x).mapTo[String]))
+  }
+
 }
 
 object StringReversingService {
