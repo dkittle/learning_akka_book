@@ -1,8 +1,7 @@
 package chapter1
 
 import scala.concurrent.duration._
-
-import chapter1.AkkaDb.StoreObject
+import chapter1.AkkaDb._
 import akka.actor.ActorSystem
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit}
 import org.scalatest._
@@ -38,6 +37,7 @@ class AkkaDbSpec extends TestKit(ActorSystem("test-system")) with ImplicitSender
       akkaDb.map.get(Key) should be (None)
       When("a value is stored")
       actorRef ! StoreObject(Key, Value)
+      expectMsg(SuccessfulOperation(Key))
       Then("the DB actor should have the stored value")
       akkaDb.map.get(Key) should equal (Some(Value))
     }
@@ -47,6 +47,7 @@ class AkkaDbSpec extends TestKit(ActorSystem("test-system")) with ImplicitSender
       akkaDb.map.get(UnknownKey) should be (None)
       When("a value is with a different key is stored")
       actorRef ! StoreObject(Key, Value)
+      expectMsg(SuccessfulOperation(Key))
       Then("the DB actor should have still have no value for the original key")
       akkaDb.map.get(UnknownKey) should equal (None)
     }
@@ -55,10 +56,58 @@ class AkkaDbSpec extends TestKit(ActorSystem("test-system")) with ImplicitSender
       Given("DB actor has a specific value")
       actorRef ! StoreObject(Key, OldValue)
       akkaDb.map.get(Key) should be (Some(OldValue))
+      expectMsg(SuccessfulOperation(Key))
       When("a value is updated")
       actorRef ! StoreObject(Key, Value)
+      expectMsg(SuccessfulOperation(Key))
       Then("the DB actor should have the new value")
       akkaDb.map.get(Key) should equal (Some(Value))
+    }
+
+    scenario("The DB actor will set only if a key doesn't exist") {
+      Given("DB actor does not have a specific value")
+      akkaDb.map.remove(Key)
+      akkaDb.map.get(Key) should equal (None)
+      When("a value is stored")
+      actorRef ! SetIfNotExists(Key, Value)
+      expectMsg(SuccessfulOperation(Key))
+      Then("the DB actor should have the value")
+      akkaDb.map.get(Key) should equal (Some(Value))
+    }
+
+    scenario("The DB actor will not set a key that exists") {
+      Given("DB actor does not have a specific value")
+      akkaDb.map.remove(Key)
+      akkaDb.map.get(Key) should equal (None)
+      When("a value is stored")
+      actorRef ! SetIfNotExists(Key, Value)
+      expectMsg(SuccessfulOperation(Key))
+      Then("the DB actor should overwrite that value")
+      actorRef ! SetIfNotExists(Key, OldValue)
+      expectMsg(FailedOperation(Key))
+      akkaDb.map.get(Key) should equal (Some(Value))
+    }
+
+    scenario("The DB actor will delete a key/value pair") {
+      Given("DB actor has a specific key/value pair")
+      actorRef ! StoreObject(Key, Value)
+      expectMsg(SuccessfulOperation(Key))
+      akkaDb.map.get(Key) should equal (Some(Value))
+      When("the key is deleted")
+      actorRef ! Delete(Key)
+      Then("the DB actor should not have the key/value any more")
+      expectMsg(SuccessfulOperation(Key))
+      akkaDb.map.get(Key) should equal (None)
+    }
+
+    scenario("The DB actor will not delete a key/value pair for a key it doesn't store") {
+      Given("DB actor does not have a specific key/value pair")
+      akkaDb.map.remove(Key)
+      akkaDb.map.get(Key) should equal (None)
+      When("the key is deleted")
+      actorRef ! Delete(Key)
+      Then("the DB actor should send a Failed operation message back")
+      expectMsg(FailedOperation(Key))
     }
 
   }
