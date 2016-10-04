@@ -3,7 +3,7 @@ package chapter3.tell
 import akka.actor.Status.Failure
 
 import scala.concurrent.duration._
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.util.Timeout
 import chapter1.AkkaDb.{GetObject, StoreObject}
 import chapter3.{ArticleBody, HttpResponse, ParseArticle, ParseHtmlArticle}
@@ -15,7 +15,7 @@ class ArticleParser(cacheActorPath: String,
                     acticleParserActorPath: String,
                     implicit val timeout: Timeout
                    )
-  extends Actor {
+  extends Actor with ActorLogging {
   val cacheActor = context.actorSelection(cacheActorPath)
   val httpClientActor = context.actorSelection(httpClientActorPath)
   val articleParserActor = context.actorSelection(acticleParserActorPath)
@@ -28,9 +28,8 @@ class ArticleParser(cacheActorPath: String,
       context.system.scheduler.scheduleOnce(3 seconds, extraActor, "timeout")
   }
 
-  private def buildExtraActor(senderRef: ActorRef, uri: String):
-  ActorRef = {
-    return context.actorOf(Props(new Actor {
+  private def buildExtraActor(senderRef: ActorRef, uri: String): ActorRef = {
+    context.actorOf(Props(new Actor {
       override def receive = {
         case "timeout" => //if we get timeout, then fail
           senderRef ! Failure(new TimeoutException("timeout!"))
@@ -46,7 +45,7 @@ class ArticleParser(cacheActorPath: String,
           senderRef ! body
         context.stop(self)
         case t => //We can get a cache miss
-          println("ignoring msg: " + t.getClass)
+          log.info(s"ignoring msg: ${t.getClass}")
       }
     }))
   }

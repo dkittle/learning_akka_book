@@ -1,6 +1,6 @@
 package chapter3.ask
 
-import akka.actor.Actor
+import akka.actor.{Actor, ActorLogging}
 import akka.pattern.ask
 import akka.util.Timeout
 import chapter1.AkkaDb.{GetObject, StoreObject}
@@ -13,7 +13,7 @@ class ArticleParser(cacheActorPath: String,
                     acticleParserActorPath: String,
                     implicit val timeout: Timeout
                    )
-  extends Actor {
+  extends Actor with ActorLogging {
   val cacheActor = context.actorSelection(cacheActorPath)
   val httpClientActor = context.actorSelection(httpClientActorPath)
   val articleParserActor = context.actorSelection(acticleParserActorPath)
@@ -35,7 +35,7 @@ class ArticleParser(cacheActorPath: String,
       result onComplete {
         //could use Pipe (covered later)
         case scala.util.Success(x: String) =>
-          println("cached result!")
+          log.info("cached result!")
           senderRef ! x //cached result
         case scala.util.Success(x: ArticleBody) =>
           cacheActor ! StoreObject(uri, x.body)
@@ -43,7 +43,7 @@ class ArticleParser(cacheActorPath: String,
         case scala.util.Failure(t) =>
           senderRef ! akka.actor.Status.Failure(t)
         case x =>
-          println("unknown message! " + x)
+          log.info(s"unknown message! $x")
       }
   }
 }
