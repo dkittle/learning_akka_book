@@ -68,4 +68,8 @@ the case of IntelliJ, index your project. This can take a while to do on a slow 
 typically have at the book club. IDEs will usually do this when you import the project. For Vi or Emacs users, type
 `sbt compile`.
 
+To run the Play application, type `sbt run`. This will start up a Netty server listening on port 9000. You can then use
+`curl` or `wget` to call your endpoints or even call your endpoints in a browser.
+
+### Exercise Instructions
 
