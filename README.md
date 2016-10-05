@@ -58,7 +58,7 @@ Fork, clone or download either `master` on Tuesday, October 11, 2016 or grab the
 git clone https://github.com/dkittle/learning_akka
 git checkout -b chapter3a
 git pull
-'``
+```
 
 Load the project into either IntelliJ or Eclipse. You can usually do this easily by opening the `build.sbt` file with
 your ide. If you are brave, use VIM, VI or Emacs.
