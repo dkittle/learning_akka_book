@@ -24,6 +24,7 @@ class ArticleParser(cacheActorPath: String,
     case msg@ParseArticle(uri) =>
       val extraActor = buildExtraActor(sender(), uri)
       cacheActor.tell(GetObject(uri), extraActor)
+
       httpClientActor.tell("test", extraActor)
       context.system.scheduler.scheduleOnce(3 seconds, extraActor, "timeout")
   }
