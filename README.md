@@ -30,8 +30,12 @@ injected into the controller.
 
 ## Chapter 3 Mob Coding
 
-Let's take what we learned in Chapter 3 and apply it to finish an implementation of grabbing and storing content.
- You are encouraged to play with `ask` and `tell` to design a solution that makes your coding-self happy.
+Hello bookworms, next week we become code-monkeys! Let's take what we learned in Chapter 3 and apply it to create an
+system that grabs and stores content. You are encouraged to play with `ask` and `tell` to design a solution that
+makes your coding-self happy.
+
+If you can, bring a laptop with the current *Learning Akka* code checked out and built for the first time. If you don't
+have a laptop suitable for devleopment, you'll likely end up on a team where you can drive on someone elses for a while.
 
 ### Structure
 We’ll split up into groups of 2-3 people and work on a problem together. One person will “drive” at any given time,
