@@ -52,7 +52,7 @@ are driving. If you are assisting and the driver is quiet for a while, ask what 
 you code is going to do and will often naturally help you arrive at a clean solution.
 
 ### Prep Work
-Fork, clone or download either `master` on Tuesday, October 11, 2016 or grab the branch named "chapter3a" from
+Fork, clone or download either `master` on or before Tuesday, October 11, 2016 or grab the branch named "chapter3a" from
  this repo: `https://github.com/dkittle/learning_akka`. If you've not used git before, try the following:
 ```
 git clone https://github.com/dkittle/learning_akka
