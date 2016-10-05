@@ -31,7 +31,7 @@ injected into the controller.
 ## Chapter 3 Mob Coding
 
 Let's take what we learned in Chapter 3 and apply it to finish an implementation of grabbing and storing content.
- You are encouraged to play with ask and tell to design a solution that makes your coding self happy.
+ You are encouraged to play with `ask` and `tell` to design a solution that makes your coding-self happy.
 
 ### Structure
 We’ll split up into groups of 2-3 people and work on a problem together. One person will “drive” at any given time,
@@ -42,26 +42,30 @@ If people already using Akka want to pair, they’ll work in pairs. For people n
 groups of 3.
 
 ### Ground Rules
-*Be nice to one another*, ask if you can make a suggestion, suggest tests that might prove a point you are trying tot make.
+**Be nice to one another**, ask if you can make a suggestion, suggest tests that might prove a point you are trying to make.
 
-*Collaborate*, if the “driver” seems to struggle, ask if you can help out by establishing the basic structure of a
+**Collaborate**, if the “driver” seems to struggle, ask if you can help out by establishing the basic structure of a
 solution. Then you can pass the keyboard back and they can write some tests. Talk out loud about your thoughts if you
 are driving. If you are assisting and the driver is quiet for a while, ask what they are thinking and discuss.
 
-*Try to do TDD*, write a test against an unimplemented method (???). Starting with a test will help you preplan what
+**Try to do TDD**, write a test against an unimplemented method (???). Starting with a test will help you preplan what
 you code is going to do and will often naturally help you arrive at a clean solution.
 
-Prep Work
-Fork, clone or download either the mast branch on Tuesday, October 11, 2016 or grab the branch named "chapter3a" from
+### Prep Work
+Fork, clone or download either `master` on Tuesday, October 11, 2016 or grab the branch named "chapter3a" from
  this repo: `https://github.com/dkittle/learning_akka`. If you've not used git before, try the following:
-```git clone https://github.com/dkittle/learning_akka
+```
+git clone https://github.com/dkittle/learning_akka
 git checkout -b chapter3a
-git pull'``
+git pull
+'``
 
 Load the project into either IntelliJ or Eclipse. You can usually do this easily by opening the `build.sbt` file with
 your ide. If you are brave, use VIM, VI or Emacs.
 
-For your project to build for the first time. This will download all the dependencies in the `build.sbt` file and, in
+Make sure your project builds for the first time. This will download all the dependencies in the `build.sbt` file and, in
 the case of IntelliJ, index your project. This can take a while to do on a slow internet connection, which is what we
-typically have at the book club.
+typically have at the book club. IDEs will usually do this when you import the project. For Vi or Emacs users, type
+`sbt compile`.
+
 
