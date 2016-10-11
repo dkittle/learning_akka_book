@@ -1,7 +1,10 @@
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
+import akka.actor.{ActorRef, ActorSystem}
+import chapter2.FetcherActor
+import chapter2.FetcherActor.FetchUrl
 import models.UrlToRead
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
@@ -9,6 +12,7 @@ import services.StringReversingService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
+@Singleton
 class Application @Inject() (stringReversingService: StringReversingService) extends Controller {
 
   def reverseString(s: String) = Action.async { implicit request =>
@@ -28,6 +32,10 @@ class Application @Inject() (stringReversingService: StringReversingService) ext
   }
 
 
+  implicit val system = ActorSystem()
+
+  lazy val fetcherRef: ActorRef = system.actorOf(FetcherActor.props())
+
   def readContentFromUrl = Action(BodyParsers.parse.json) { implicit rs =>
     val rssResult = rs.body.validate[UrlToRead]
     rssResult.fold(
@@ -35,7 +43,7 @@ class Application @Inject() (stringReversingService: StringReversingService) ext
         BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
       },
       rssUrl => {
-//        dao.save(employee.copy(json = rs.body.toString()))
+        fetcherRef ! FetchUrl(rssUrl.url)
         Ok(Json.obj("status" ->"OK", "message" -> ("RSS feed saved.") ))
       }
     )
