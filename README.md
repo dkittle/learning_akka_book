@@ -35,7 +35,7 @@ system that grabs and stores content. You are encouraged to play with `ask` and 
 makes your coding-self happy.
 
 If you can, bring a laptop with the current *Learning Akka* code checked out and built for the first time. If you don't
-have a laptop suitable for devleopment, you'll likely end up on a team where you can drive on someone elses for a while.
+have a laptop suitable for development, you'll likely end up on a team where you can drive on someone else's for a while.
 
 ### Structure
 We’ll split up into groups of 2-3 people and work on a problem together. One person will “drive” at any given time,
@@ -65,7 +65,7 @@ git pull
 ```
 
 Load the project into either IntelliJ or Eclipse. You can usually do this easily by opening the `build.sbt` file with
-your ide. If you are brave, use VIM, VI or Emacs.
+your IDE. If you are brave, use VIM, VI or Emacs.
 
 Make sure your project builds for the first time. This will download all the dependencies in the `build.sbt` file and, in
 the case of IntelliJ, index your project. This can take a while to do on a slow internet connection, which is what we
