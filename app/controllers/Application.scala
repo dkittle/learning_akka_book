@@ -8,21 +8,30 @@ import services.StringReversingService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Application @Inject() (stringReversingService: StringReversingService) extends Controller {
+class Application @Inject()(stringReversingService: StringReversingService) extends Controller {
 
   def reverseString(s: String) = Action.async { implicit request =>
     stringReversingService.reverse(s).
-      map (s => Ok(Json.obj("status" -> "OK", "result" -> s))).
-        recover {
-          case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
-        }
+      map(s => Ok(Json.obj("status" -> "OK", "result" -> s))).
+      recover {
+        case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
+      }
   }
 
   def reverseAll(phrase: Seq[String]) = Action.async {
     stringReversingService.reverseAll(phrase).
-      map (s => Ok(Json.obj("status" -> "OK", "result" -> s.mkString((","))))).
-        recover {
-          case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
-        }
+      map(s => Ok(Json.obj("status" -> "OK", "result" -> s.mkString((","))))).
+      recover {
+        case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
+      }
   }
+
+  def fetchContentFromUrl = Action(parse.json) { request =>
+    (request.body \ "url").asOpt[String].map { url =>
+      Ok(s"Hello $url")
+    }.getOrElse {
+      BadRequest("Missing parameter [url]")
+    }
+  }
+
 }

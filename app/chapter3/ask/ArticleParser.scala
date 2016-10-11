@@ -5,6 +5,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import chapter1.AkkaDb.{GetObject, StoreObject}
 import chapter3.{ArticleBody, HttpResponse, ParseArticle, ParseHtmlArticle}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -21,17 +22,17 @@ class ArticleParser(cacheActorPath: String,
   override def receive: Receive = {
     case ParseArticle(uri) =>
       val senderRef = sender()
-    val cacheResult = cacheActor ? GetObject(uri)
-    val result = cacheResult.recoverWith {
-      case _: Exception =>
-        val fRawResult = httpClientActor ? uri
-        fRawResult flatMap {
-          case HttpResponse(rawArticle) =>
-            articleParserActor ? ParseHtmlArticle(uri, rawArticle)
-          case x =>
-            Future.failed(new Exception("unknown response"))
-        }
-    }
+      val cacheResult = cacheActor ? GetObject(uri)
+      val result = cacheResult.recoverWith {
+        case _: Exception =>
+          val fRawResult = httpClientActor ? uri
+          fRawResult flatMap {
+            case HttpResponse(rawArticle) =>
+              articleParserActor ? ParseHtmlArticle(uri, rawArticle)
+            case x =>
+              Future.failed(new Exception("unknown response"))
+          }
+      }
       result onComplete {
         //could use Pipe (covered later)
         case scala.util.Success(x: String) =>

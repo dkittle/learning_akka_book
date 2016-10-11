@@ -7,6 +7,7 @@ import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.util.Timeout
 import chapter1.AkkaDb.{GetObject, StoreObject}
 import chapter3.{ArticleBody, HttpResponse, ParseArticle, ParseHtmlArticle}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.TimeoutException
 
@@ -36,15 +37,15 @@ class ArticleParser(cacheActorPath: String,
           senderRef ! Failure(new TimeoutException("timeout!"))
           context.stop(self)
         case HttpResponse(body) => //If we get the http response first, we pass it to be parsed.
-        articleParserActor ! ParseHtmlArticle(uri, body)
+          articleParserActor ! ParseHtmlArticle(uri, body)
         case body: String => //If we get the cache response first, we handle it and shut down.
-            //The cache response will come back before the HTTP response so we never parse in this case.
-        senderRef ! body
-        context.stop(self)
+          //The cache response will come back before the HTTP response so we never parse in this case.
+          senderRef ! body
+          context.stop(self)
         case ArticleBody(uri, body) => //If we get the parsed article we just parsed it
           cacheActor ! StoreObject(uri, body) //Cache it as we just parsed it
           senderRef ! body
-        context.stop(self)
+          context.stop(self)
         case t => //We can get a cache miss
           log.info(s"ignoring msg: ${t.getClass}")
       }
