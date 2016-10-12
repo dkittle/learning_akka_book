@@ -1,13 +1,12 @@
-package chapter2
+package chapter3.actors
 
 import java.net.URL
 
 import akka.actor.{Actor, ActorRef, ActorSystem, Props, Status}
-import chapter2.FetcherActor.FetchUrl
-import chapter2.ParserActor.ParseItemXml
-import chapter2.StringReversingActor._
+import chapter3.actors.FetcherActor.FetchUrl
+import chapter3.actors.ParserActor.ParseItemXml
 
-import scala.xml.{Elem, NodeSeq}
+import scala.xml.NodeSeq
 
 class FetcherActor extends Actor {
 

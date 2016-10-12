@@ -2,15 +2,21 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import akka.actor.{ActorRef, ActorSystem}
-import chapter2.FetcherActor
-import chapter2.FetcherActor.FetchUrl
+import akka.actor.{ActorRef, ActorSystem, Props}
+import chapter1.AkkaDb
+import chapter1.AkkaDb.GetObject
+import chapter3.actors.FetcherActor.FetchUrl
+import chapter3.actors.FetcherActor
 import models.UrlToRead
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import services.StringReversingService
+import akka.pattern.ask
+import akka.util.Timeout
 
+import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 @Singleton
 class Application @Inject() (stringReversingService: StringReversingService) extends Controller {
@@ -35,6 +41,7 @@ class Application @Inject() (stringReversingService: StringReversingService) ext
   implicit val system = ActorSystem()
 
   lazy val fetcherRef: ActorRef = system.actorOf(FetcherActor.props())
+  val dbRef: ActorRef = system.actorOf(Props[AkkaDb], "cache")
 
   def readContentFromUrl = Action(BodyParsers.parse.json) { implicit rs =>
     val rssResult = rs.body.validate[UrlToRead]
@@ -47,6 +54,15 @@ class Application @Inject() (stringReversingService: StringReversingService) ext
         Ok(Json.obj("status" ->"OK", "message" -> ("RSS feed saved.") ))
       }
     )
+  }
+
+  def retrieveContentByUrl(url : String) = Action.async {
+    implicit val timeout = Timeout(5 seconds)
+    val content: Future[AkkaDb.Result] = (dbRef ? GetObject(url)).mapTo[AkkaDb.Result]
+    content.map (s => Ok(Json.obj("status" -> "OK", "result" -> s.v.get.toString))).
+      recover {
+        case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
+      }
   }
 
 }

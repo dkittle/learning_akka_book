@@ -55,7 +55,6 @@ class AkkaDbSpec extends TestKit(ActorSystem("test-system")) with ImplicitSender
     scenario("The DB actor will update values") {
       Given("DB actor has a specific value")
       actorRef ! StoreObject(Key, OldValue)
-      akkaDb.map.get(Key) should be (Some(OldValue))
       expectMsg(SuccessfulOperation(Key))
       When("a value is updated")
       actorRef ! StoreObject(Key, Value)
