@@ -30,6 +30,7 @@ class AkkaDb extends Actor {
         map.remove(k)
         sender() ! SuccessfulOperation(k)
       }
+    case GetAllKeys => sender() ! map.keys.toSeq
     case _ => sender() ! UnknownMessage
   }
 }
@@ -51,5 +52,7 @@ object AkkaDb {
   case class Delete(k: String)
 
   case class FailedOperation(k: String)
+
+  case object GetAllKeys
 
 }

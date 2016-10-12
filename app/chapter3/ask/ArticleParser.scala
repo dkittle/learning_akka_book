@@ -6,6 +6,8 @@ import akka.util.Timeout
 import chapter1.AkkaDb.{GetObject, StoreObject}
 import chapter3.{ArticleBody, HttpResponse, ParseArticle, ParseHtmlArticle}
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.concurrent.Future
 
 class ArticleParser(cacheActorPath: String,
