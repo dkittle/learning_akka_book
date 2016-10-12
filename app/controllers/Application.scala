@@ -16,7 +16,6 @@ import akka.util.Timeout
 
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 @Singleton
 class Application @Inject() (stringReversingService: StringReversingService) extends Controller {
@@ -58,11 +57,11 @@ class Application @Inject() (stringReversingService: StringReversingService) ext
 
   def retrieveContentByUrl(url : String) = Action.async {
     implicit val timeout = Timeout(5 seconds)
-    val content: Future[AkkaDb.Result] = (dbRef ? GetObject(url)).mapTo[AkkaDb.Result]
-    content.map {
+    (dbRef ? GetObject(url)).map {
       case AkkaDb.Result(_, Some(v)) => Ok(Json.obj("status" -> "OK", "result" -> v.toString))
-      case AkkaDb.Result(_, None) => NotFound }.
-      recover {
+      case AkkaDb.Result(_, None) => NotFound
+      case _ => BadRequest
+    }.recover {
         case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
       }
   }
