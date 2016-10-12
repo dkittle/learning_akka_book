@@ -9,27 +9,28 @@ class AkkaDb extends Actor {
 
   import AkkaDb._
 
-  val map = mutable.Map.empty[String, Object]
+  val cache = mutable.Map.empty[String, Object]
 
   override def receive = {
     case StoreObject(k, v) =>
-      map.put(k, v)
+      cache.put(k, v)
       sender() ! SuccessfulOperation(k)
-    case GetObject(k) => sender() ! Result(k, map.get(k))
+    case GetObject(k) => sender() ! Result(k, cache.get(k))
     case SetIfNotExists(k, v) =>
-      if(map.get(k) == None) {
-        map.put(k, v)
+      if(cache.get(k).isEmpty) {
+        cache.put(k, v)
         sender() ! SuccessfulOperation(k)
       }
       else
         sender() ! FailedOperation(k)
     case Delete(k) =>
-      if(map.get(k) == None)
+      if(cache.get(k).isEmpty)
         sender() ! FailedOperation(k)
       else {
-        map.remove(k)
+        cache.remove(k)
         sender() ! SuccessfulOperation(k)
       }
+    case GetKeys => sender() ! cache.keySet
     case _ => sender() ! UnknownMessage
   }
 }
@@ -51,5 +52,7 @@ object AkkaDb {
   case class Delete(k: String)
 
   case class FailedOperation(k: String)
+
+  case object GetKeys
 
 }

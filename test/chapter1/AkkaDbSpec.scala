@@ -25,7 +25,7 @@ class AkkaDbSpec extends TestKit(ActorSystem("test-system")) with ImplicitSender
   feature("Exercise the storage and retrieval features of the DB actor") {
     scenario("The DB actor sends a message back when sent an unknown message") {
       Given("a DB actor in any state")
-      akkaDb.map.get(Key) should be (None)
+      akkaDb.cache.get(Key) should be (None)
       When("an unknkown message is sent")
       actorRef ! "foo"
       Then("the DB actor should send a specific error message back")
@@ -34,22 +34,22 @@ class AkkaDbSpec extends TestKit(ActorSystem("test-system")) with ImplicitSender
 
     scenario("The DB actor can store values") {
       Given("DB actor does not have a specific value")
-      akkaDb.map.get(Key) should be (None)
+      akkaDb.cache.get(Key) should be (None)
       When("a value is stored")
       actorRef ! StoreObject(Key, Value)
       expectMsg(SuccessfulOperation(Key))
       Then("the DB actor should have the stored value")
-      akkaDb.map.get(Key) should equal (Some(Value))
+      akkaDb.cache.get(Key) should equal (Some(Value))
     }
 
     scenario("The DB actor will return None if it doesn't have a value") {
       Given("DB actor does not have a specific key")
-      akkaDb.map.get(UnknownKey) should be (None)
+      akkaDb.cache.get(UnknownKey) should be (None)
       When("a value is with a different key is stored")
       actorRef ! StoreObject(Key, Value)
       expectMsg(SuccessfulOperation(Key))
       Then("the DB actor should have still have no value for the original key")
-      akkaDb.map.get(UnknownKey) should equal (None)
+      akkaDb.cache.get(UnknownKey) should equal (None)
     }
 
     scenario("The DB actor will update values") {
@@ -60,49 +60,49 @@ class AkkaDbSpec extends TestKit(ActorSystem("test-system")) with ImplicitSender
       actorRef ! StoreObject(Key, Value)
       expectMsg(SuccessfulOperation(Key))
       Then("the DB actor should have the new value")
-      akkaDb.map.get(Key) should equal (Some(Value))
+      akkaDb.cache.get(Key) should equal (Some(Value))
     }
 
     scenario("The DB actor will set only if a key doesn't exist") {
       Given("DB actor does not have a specific value")
-      akkaDb.map.remove(Key)
-      akkaDb.map.get(Key) should equal (None)
+      akkaDb.cache.remove(Key)
+      akkaDb.cache.get(Key) should equal (None)
       When("a value is stored")
       actorRef ! SetIfNotExists(Key, Value)
       expectMsg(SuccessfulOperation(Key))
       Then("the DB actor should have the value")
-      akkaDb.map.get(Key) should equal (Some(Value))
+      akkaDb.cache.get(Key) should equal (Some(Value))
     }
 
     scenario("The DB actor will not set a key that exists") {
       Given("DB actor does not have a specific value")
-      akkaDb.map.remove(Key)
-      akkaDb.map.get(Key) should equal (None)
+      akkaDb.cache.remove(Key)
+      akkaDb.cache.get(Key) should equal (None)
       When("a value is stored")
       actorRef ! SetIfNotExists(Key, Value)
       expectMsg(SuccessfulOperation(Key))
       Then("the DB actor should overwrite that value")
       actorRef ! SetIfNotExists(Key, OldValue)
       expectMsg(FailedOperation(Key))
-      akkaDb.map.get(Key) should equal (Some(Value))
+      akkaDb.cache.get(Key) should equal (Some(Value))
     }
 
     scenario("The DB actor will delete a key/value pair") {
       Given("DB actor has a specific key/value pair")
       actorRef ! StoreObject(Key, Value)
       expectMsg(SuccessfulOperation(Key))
-      akkaDb.map.get(Key) should equal (Some(Value))
+      akkaDb.cache.get(Key) should equal (Some(Value))
       When("the key is deleted")
       actorRef ! Delete(Key)
       Then("the DB actor should not have the key/value any more")
       expectMsg(SuccessfulOperation(Key))
-      akkaDb.map.get(Key) should equal (None)
+      akkaDb.cache.get(Key) should equal (None)
     }
 
     scenario("The DB actor will not delete a key/value pair for a key it doesn't store") {
       Given("DB actor does not have a specific key/value pair")
-      akkaDb.map.remove(Key)
-      akkaDb.map.get(Key) should equal (None)
+      akkaDb.cache.remove(Key)
+      akkaDb.cache.get(Key) should equal (None)
       When("the key is deleted")
       actorRef ! Delete(Key)
       Then("the DB actor should send a Failed operation message back")

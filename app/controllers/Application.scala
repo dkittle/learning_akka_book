@@ -59,7 +59,7 @@ class Application @Inject() (stringReversingService: StringReversingService) ext
   def retrieveContentByUrl(url : String) = Action.async {
     implicit val timeout = Timeout(5 seconds)
     val content: Future[AkkaDb.Result] = (dbRef ? GetObject(url)).mapTo[AkkaDb.Result]
-    content.map (s => Ok(Json.obj("status" -> "OK", "result" -> s.v.get.toString))).
+    content.map { case AkkaDb.Result(_, Some(v)) => Ok(Json.obj("status" -> "OK", "result" -> v.toString)) }.
       recover {
         case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
       }
