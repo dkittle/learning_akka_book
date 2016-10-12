@@ -8,7 +8,7 @@ GET     /reverse-all                controllers.Application.reverseAll(phrase: S
 
 #Content stuff
 POST    /contents/url               controllers.Application.readContentFromUrl
-GET     /contents/url/:url          controllers.Application.retrieveContentByUrl(url: String)
+GET     /contents/url                 controllers.Application.retrieveContentByUrl(url: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
