@@ -1,10 +1,10 @@
 package controllers
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{Inject, Named, Singleton}
 
 import akka.actor.{ActorRef, ActorSystem, Props}
 import chapter1.AkkaDb
-import chapter1.AkkaDb.GetObject
+import chapter1.AkkaDb.{GetKeys, GetObject}
 import chapter3.actors.FetcherActor.FetchUrl
 import chapter3.actors.FetcherActor
 import models.UrlToRead
@@ -14,11 +14,17 @@ import services.StringReversingService
 import akka.pattern.ask
 import akka.util.Timeout
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
 
 @Singleton
-class Application @Inject() (stringReversingService: StringReversingService) extends Controller {
+class Application @Inject() (stringReversingService: StringReversingService,
+                             @Named("fetcher") fetcherRef: ActorRef,
+                             @Named("cache") dbRef: ActorRef)
+                            (implicit ec: ExecutionContext)
+                              extends Controller {
+
+  implicit val timeout = Timeout(5 seconds)
 
   def reverseString(s: String) = Action.async { implicit request =>
     stringReversingService.reverse(s).
@@ -30,17 +36,11 @@ class Application @Inject() (stringReversingService: StringReversingService) ext
 
   def reverseAll(phrase: Seq[String]) = Action.async {
     stringReversingService.reverseAll(phrase).
-      map (s => Ok(Json.obj("status" -> "OK", "result" -> s.mkString((","))))).
+      map (s => Ok(Json.obj("status" -> "OK", "result" -> s.mkString(",")))).
         recover {
           case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
         }
   }
-
-
-  implicit val system = ActorSystem()
-
-  lazy val fetcherRef: ActorRef = system.actorOf(FetcherActor.props())
-  val dbRef: ActorRef = system.actorOf(Props[AkkaDb], "cache")
 
   def readContentFromUrl = Action(BodyParsers.parse.json) { implicit rs =>
     val rssResult = rs.body.validate[UrlToRead]
@@ -50,20 +50,28 @@ class Application @Inject() (stringReversingService: StringReversingService) ext
       },
       rssUrl => {
         fetcherRef ! FetchUrl(rssUrl.url)
-        Ok(Json.obj("status" ->"OK", "message" -> ("RSS feed saved.") ))
+        Ok(Json.obj("status" ->"OK", "message" -> "RSS feed saved." ))
       }
     )
   }
 
   def retrieveContentByUrl(url : String) = Action.async {
-    implicit val timeout = Timeout(5 seconds)
     (dbRef ? GetObject(url)).map {
-      case AkkaDb.Result(_, Some(v)) => Ok(Json.obj("status" -> "OK", "result" -> v.toString))
+      case AkkaDb.Result(_, Some(v: String)) => Ok(Json.obj("status" -> "OK", "result" -> v))
       case AkkaDb.Result(_, None) => NotFound
       case _ => BadRequest
     }.recover {
         case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
       }
+  }
+
+  def retrieveUrls() = Action.async {
+    (dbRef ? GetKeys).map {
+      case s: Seq[String] => Ok(Json.obj("status" -> "OK", "result" -> s.map(UrlToRead(_))))
+      case _ => BadRequest
+    }.recover {
+      case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
+    }
   }
 
 }

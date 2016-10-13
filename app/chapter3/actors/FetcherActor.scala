@@ -1,27 +1,25 @@
 package chapter3.actors
 
 import java.net.URL
+import javax.inject.{Inject, Named}
 
-import akka.actor.{Actor, ActorRef, ActorSystem, Props, Status}
+import akka.actor.{Actor, ActorRef, Props, Status}
 import chapter3.actors.FetcherActor.FetchUrl
 import chapter3.actors.ParserActor.ParseItemXml
 
 import scala.xml.NodeSeq
 
-class FetcherActor extends Actor {
-
-  implicit val system = ActorSystem()
-  lazy val parserRef: ActorRef = system.actorOf(ParserActor.props())
+class FetcherActor @Inject()(@Named("parser") parserRef: ActorRef) extends Actor {
 
   override def receive = {
-    case FetchUrl(x) => grabXml(x).map (parserRef ! ParseItemXml(_))
+    case FetchUrl(x) => grabXml(x).foreach(parserRef ! ParseItemXml(_))
     case _ => sender() ! Status.Failure(new Exception("invalid message"))
   }
 
 
   private def grabXml(url: String): NodeSeq = {
     val xml = scala.xml.XML.load(new URL(url))
-    (xml \\ "item")
+    xml \\ "item"
   }
 
 }
@@ -29,7 +27,10 @@ class FetcherActor extends Actor {
 object FetcherActor {
 
   case class FetchUrl(url: String)
-  def props(): Props = { Props(classOf[FetcherActor]) }
+
+  def props(): Props = {
+    Props(classOf[FetcherActor])
+  }
 
 }
 
