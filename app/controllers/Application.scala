@@ -8,7 +8,7 @@ import akka.util.Timeout
 import chapter1.AkkaDb
 import chapter1.AkkaDb.{GetKeys, GetObject}
 import chapter3.actors.FetcherActor.FetchUrl
-import models.UrlToRead
+import models.{Guid, UrlToRead}
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import services.StringReversingService
@@ -60,8 +60,8 @@ class Application @Inject()(stringReversingService: StringReversingService,
     )
   }
 
-  def retrieveContentByUrl(url: String) = Action.async {
-    (dbRef ? GetObject(url)).map {
+  def retrieveContentByGuid(guid: String) = Action.async {
+    (dbRef ? GetObject(guid)).map {
       case AkkaDb.Result(_, Some(v: String)) => Ok(Json.obj("status" -> "OK", "result" -> v))
       case AkkaDb.Result(_, None) => NotFound
       case _ => BadRequest
@@ -70,9 +70,9 @@ class Application @Inject()(stringReversingService: StringReversingService,
     }
   }
 
-  def retrieveUrls() = Action.async {
+  def retrieveGuids() = Action.async {
     (dbRef ? GetKeys).map {
-      case s: Seq[String] => Ok(Json.obj("status" -> "OK", "result" -> s.map(UrlToRead(_))))
+      case s: Seq[String] => Ok(Json.obj("status" -> "OK", "result" -> s.map(Guid(_))))
       case _ => BadRequest
     }.recover {
       case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))

@@ -144,4 +144,6 @@ curl -i http://localhost:9000/contents/guids
 ```
 
 Retrieve a piece of content
-```curl -i http://localhost:9000/contents/guid/[a guid from the content in the DB]```
+```
+curl -i http://localhost:9000/content/guid/[a guid from the content in the DB]
+```

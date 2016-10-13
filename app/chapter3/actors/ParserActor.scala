@@ -18,8 +18,8 @@ class ParserActor @Inject()(@Named("cache") dbRef: ActorRef) extends Actor with 
 
 
   private def storeContent(ns: NodeSeq): Unit = {
-    val content = Content((ns \\ "link").text, (ns \\ "description").text)
-    dbRef ! StoreObject(content.url, content.content)
+    val content = Content((ns \\ "guid").text, (ns \\ "description").text)
+    dbRef ! StoreObject(content.guid, content.content)
   }
 
 }

@@ -1,3 +1,3 @@
 package models
 
-case class Content(url: String, content: String)
+case class Content(guid: String, content: String)
