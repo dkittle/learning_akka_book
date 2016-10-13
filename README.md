@@ -77,3 +77,13 @@ To run the Play application, type `sbt run`. This will start up a Netty server l
 
 ### Exercise Instructions
 
+#### Example Curls
+
+Parse an RSS feed
+curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.cbc.ca/cmlink/1.394"}' http://localhost:9000/contents/url
+
+List the URL keys in the DB
+curl -i http://localhost:9000/contents/urls
+
+Retrieve a piece of content
+curl -i http://localhost:9000/contents/url?url=[a url from the list in the DB]

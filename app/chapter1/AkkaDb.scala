@@ -30,7 +30,7 @@ class AkkaDb extends Actor {
         cache.remove(k)
         sender() ! SuccessfulOperation(k)
       }
-    case GetKeys => sender() ! cache.keySet
+    case GetKeys => sender() ! cache.keys.toSeq
     case _ => sender() ! UnknownMessage
   }
 }
