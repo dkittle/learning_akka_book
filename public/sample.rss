@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss>
+    <channel>
+        <title>Sample data for Learning Akka book study</title>
+        <language>en-ca</language>
+        <item>
+            <title>Tarzan of the Apes</title>
+            <guid>ebooks/78</guid>
+            <pubDate>Thu, 13 Oct 2016 05:00:00 EDT</pubDate>
+            <author>Edgar Rice Burroughs</author>
+            <link>http://www.gutenberg.org/cache/epub/78/pg78.txt</link>
+            <description>I had this story from one who had no business to tell it to me, or to any other. I may credit
+                the seductive influence of an old vintage upon the narrator for the beginning of it, and my own
+                skeptical incredulity during the days that followed for the balance of the strange tale.
+            </description>
+        </item>
+        <item>
+            <title>Tarzan of the Apes</title>
+            <guid>ebooks/78</guid>
+            <pubDate>Thu, 13 Oct 2016 05:00:00 EDT</pubDate>
+            <author>Edgar Rice Burroughs</author>
+            <link>http://www.gutenberg.org/cache/epub/78/pg78.txt</link>
+            <description>I had this story from one who had no business to tell it to me, or to any other. I may credit
+                the seductive influence of an old vintage upon the narrator for the beginning of it, and my own
+                skeptical incredulity during the days that followed for the balance of the strange tale.
+            </description>
+        </item>
+    </channel>
+
+</rss>
