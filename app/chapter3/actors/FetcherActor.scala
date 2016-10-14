@@ -4,7 +4,7 @@ import javax.inject.{Inject, Named}
 
 import akka.actor.{Actor, ActorRef, Status}
 
-class FetcherActor @Inject()(@Named("parser") parserRef: ActorRef) extends Actor {
+class FetcherActor extends Actor {
 
   override def receive = {
     case _ => sender() ! Status.Failure(new Exception("invalid message"))
