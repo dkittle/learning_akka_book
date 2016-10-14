@@ -125,6 +125,13 @@ GET http://localhost:9000/contents/guids
 For a basic system, you likely want a controller, a DB (cache) actor, an HTTP client actor and possible an XML parser actor. You may consider creating a service (or actor) between the controller and actors doing the real work.
 
 #### Bonus
+In the controller's `readContentFromUrl` function, I'm using tell (!) to send a message to the actor. This is less than
+optimal as the controller, as written, is not receiving any indication of success or failure from the actor.
+
+Update this function so it's receiving success/failure feedback from the FetcherActor. Jason showed us a couple of ways
+of doing this in chapter 3 so if you've read the chapter, choose a pattern and run with it.
+
+#### Bonus Bonus
 Ok, you were up for a big challenge and took on RSS parsing. RSS feeds include many articles described in <item> elements.
 Create an actor that monitors the state of parsing each of the items in a feed. It should log the title of each item in
 the feed as the parser parses that item. It also logs when all items from a feed have been parsed.  Content and any
