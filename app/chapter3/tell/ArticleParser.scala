@@ -10,6 +10,7 @@ import chapter3.{ArticleBody, HttpResponse, ParseArticle, ParseHtmlArticle}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.TimeoutException
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ArticleParser(cacheActorPath: String,
                     httpClientActorPath: String,
