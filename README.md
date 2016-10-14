@@ -135,7 +135,7 @@ additional metadata (like title) should be returned in JSON format.
 
 Parse an RSS feed
 ```
-curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://www.cbc.ca/cmlink/1.394"}' http://localhost:9000/contents/url
+curl -i -H "Content-Type: application/json" -X POST -d '{"url":"http://localhost:9000/assets/sample.rss"}' http://localhost:9000/contents/url
 ```
 
 List the guid keys in the DB
