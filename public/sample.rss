@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss>
+    <channel>
+        <title>Sample data for Learning Akka book study</title>
+        <language>en-ca</language>
+        <item>
+            <title>Tarzan of the Apes</title>
+            <guid>ebooks/78</guid>
+            <pubDate>Thu, 13 Oct 2016 05:00:00 EDT</pubDate>
+            <author>Edgar Rice Burroughs</author>
+            <link>http://localhost:9000/assets/ebooks/pg78.txt</link>
+            <description>I had this story from one who had no business to tell it to me, or to any other. I may credit
+                the seductive influence of an old vintage upon the narrator for the beginning of it, and my own
+                skeptical incredulity during the days that followed for the balance of the strange tale.
+            </description>
+        </item>
+        <item>
+            <title>The Return Of Tarzan</title>
+            <guid>ebooks/81</guid>
+            <pubDate>Thu, 13 Oct 2016 05:00:00 EDT</pubDate>
+            <author>Edgar Rice Burroughs</author>
+            <link>http://localhost:9000/assets/ebooks/pg81.txt</link>
+            <description>"Magnifique!" ejaculated the Countess de Coude, beneath her breath.
+
+                "Eh?" questioned the count, turning toward his young wife.  "What is it
+                that is magnificent?" and the count bent his eyes in various directions
+                in quest of the object of her admiration.</description>
+        </item>
+        <item>
+            <title>The Beasts of Tarzan</title>
+            <guid>ebooks/85</guid>
+            <pubDate>Thu, 13 Oct 2016 05:00:00 EDT</pubDate>
+            <author>Edgar Rice Burroughs</author>
+            <link>http://localhost:9000/assets/ebooks/pg85.txt</link>
+            <description>"The entire affair is shrouded in mystery," said D'Arnot.  "I have it
+                on the best of authority that neither the police nor the special agents
+                of the general staff have the faintest conception of how it was
+                accomplished.  All they know, all that anyone knows, is that Nikolas
+                Rokoff has escaped."</description>
+        </item>
+        <item>
+            <title>The Son of Tarzan</title>
+            <guid>ebooks/90</guid>
+            <pubDate>Thu, 13 Oct 2016 05:00:00 EDT</pubDate>
+            <author>Edgar Rice Burroughs</author>
+            <link>http://localhost:9000/assets/ebooks/pg90.txt</link>
+            <description>The long boat of the Marjorie W. was floating down the broad Ugambi
+                with ebb tide and current.  Her crew were lazily enjoying this respite
+                from the arduous labor of rowing up stream.  Three miles below them lay
+                the Marjorie W.  herself, quite ready to sail so soon as they should
+                have clambered aboard and swung the long boat to its davits.  Presently
+                the attention of every man was drawn from his dreaming or his gossiping
+                to the northern bank of the river.  There, screaming at them in a
+                cracked falsetto and with skinny arms outstretched, stood a strange
+                apparition of a man.</description>
+        </item>
+        <item>
+            <title>Jungle Tales of Tarzan</title>
+            <guid>ebooks/106</guid>
+            <pubDate>Thu, 13 Oct 2016 05:00:00 EDT</pubDate>
+            <author>Edgar Rice Burroughs</author>
+            <link>http://localhost:9000/assets/ebooks/pg106.txt</link>
+            <description>TEEKA, STRETCHED AT luxurious ease in the shade of the tropical forest,
+                presented, unquestionably, a most alluring picture of young, feminine
+                loveliness.  Or at least so thought Tarzan of the Apes, who squatted
+                upon a low-swinging branch in a near-by tree and looked down upon her.</description>
+        </item>
+    </channel>
+
+</rss>

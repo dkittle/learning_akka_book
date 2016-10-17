@@ -6,7 +6,11 @@
 GET     /reverse/:s                 controllers.Application.reverseString(s: String)
 GET     /reverse-all                controllers.Application.reverseAll(phrase: Seq[String])
 
+#Content stuff
+POST    /contents/url               controllers.Application.readContentFromUrl
+GET     /content/guid/:guid         controllers.Application.retrieveContentByGuid(guid: String)
+GET     /contents/guids             controllers.Application.retrieveGuids
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
-    
