@@ -71,9 +71,8 @@ class Application @Inject()(stringReversingService: StringReversingService,
   }
 
   def retrieveGuids() = Action.async {
-    (dbRef ? GetKeys).map {
-      case s: Seq[String] => Ok(Json.obj("status" -> "OK", "result" -> s.map(Guid(_))))
-      case _ => BadRequest
+    (dbRef ? GetKeys).mapTo[Seq[String]].map {
+      s => Ok(Json.obj("status" -> "OK", "result" -> s.map(Guid(_)).toString))
     }.recover {
       case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
     }
