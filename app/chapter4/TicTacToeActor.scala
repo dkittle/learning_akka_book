@@ -13,19 +13,17 @@ class TicTacToeActor extends FSM[State, GameData] {
       sender() ! whoPlays(g.player)
       stay using g
 
-    case Event(Play(m), g: GameData) =>
-      if (m < 0 || m >= g.board.length) {
+    case Event(Play(p), g: GameData) if p < 0 || p >= g.board.length =>
         sender() ! IllegalMove
         stay using g
-      }
-      else if (g.board(m) == ' ') {
+
+    case Event(Play(p), g: GameData) if g.board(p) == ' ' =>
         sender() ! whoPlays(whoPlaysNext(g.player))
-        stay using g.copy(player = whoPlaysNext(g.player), g.board.updated(m, g.player))
-      }
-      else {
+        stay using g.copy(player = whoPlaysNext(g.player), g.board.updated(p, g.player))
+
+    case Event(Play(p), g: GameData) =>
         sender() ! PositionOccupied
         stay using g
-      }
 
     case x =>
       println("uhh didn't quite get that: " + x)
