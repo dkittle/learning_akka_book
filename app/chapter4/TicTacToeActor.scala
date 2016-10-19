@@ -1,11 +1,11 @@
 package chapter4
 
-import akka.actor.FSM
+import akka.actor.{ActorRef, FSM}
 import chapter4.TicTacToeActor._
 
 class TicTacToeActor extends FSM[State, GameData] {
 
-  startWith(Playing, GameData(X, Array.fill(9){' '}))
+  startWith(Playing, GameData(X, Array.fill(9){Blank}))
 
   when(Playing) {
 
@@ -13,33 +13,50 @@ class TicTacToeActor extends FSM[State, GameData] {
       sender() ! whoPlays(g.player)
       stay using g
 
-    case Event(Play(p), g: GameData) if p < 0 || p >= g.board.length =>
+    case Event(Play(i), g: GameData) if i < 0 || i >= g.board.length =>
         sender() ! IllegalMove
         stay using g
 
-    case Event(Play(p), g: GameData) if g.board(p) == ' ' =>
-        sender() ! whoPlays(whoPlaysNext(g.player))
-        stay using g.copy(player = whoPlaysNext(g.player), g.board.updated(p, g.player))
+    case Event(Play(i), g @ GameData(player, board)) if board(i) == Blank =>
+        val newBoard = board.updated(i, player)
+        if (gameWon(newBoard)) {
+          sender() ! whoWon(player)
+          goto(Done)
+        }
+        else if (!newBoard.contains(Blank)) {
+          sender() ! NoWinner
+          goto(Done)
+        }
+        else {
+          sender() ! whoPlays(whoPlaysNext(player))
+          stay using g.copy(player = whoPlaysNext(player), newBoard)
+        }
 
-    case Event(Play(p), g: GameData) =>
+    case Event(Play(i), g: GameData) =>
         sender() ! PositionOccupied
         stay using g
 
     case x =>
-      println("uhh didn't quite get that: " + x)
+      sender() ! "unknown message"
       stay()
   }
 
   when(Done) {
     case x =>
-      println("The game is done")
       sender() ! GameOver
       stay()
   }
 
+  def gameWon(board: Array[Player]): Boolean = TicTacToeGame.gameWon(board)
+
   def whoPlays(p: Player): PlayingMessage = p match {
     case X => XPlays
     case _ => OPlays
+  }
+
+  def whoWon(p: Player): WinningMessage = p match {
+    case X => XWon
+    case _ => OWon
   }
 
   def whoPlaysNext(p: Player): Player = p match {
@@ -56,11 +73,13 @@ object TicTacToeActor {
   type Player = Character
   val X: Player = 'X'
   val O: Player = 'O'
+  val Blank: Player = ' '
 
   case class GameData(player: Player, board: Array[Player])
 
   sealed trait State
   case object Playing extends State
+  case object CheckBoard extends State
   case object Done extends State
 
   sealed trait GameResult
@@ -73,7 +92,7 @@ object TicTacToeActor {
   case object OPlays extends PlayingMessage
   sealed trait WinningMessage extends GameResult
   case object XWon extends WinningMessage
-  case object YWon extends WinningMessage
+  case object OWon extends WinningMessage
   case object NoWinner extends WinningMessage
   case object GameOver extends WinningMessage
 }
