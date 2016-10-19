@@ -8,14 +8,25 @@ class TicTacToeActor extends FSM[State, GameData] {
   startWith(Playing, GameData(X, Array.fill(9){' '}))
 
   when(Playing) {
-    case Event(WhoPlays, g: GameData) => {
+
+    case Event(WhoPlays, g: GameData) =>
       sender() ! whoPlays(g.player)
       stay using g
-    }
-    case Event(Play(m), g: GameData) => {
-      sender() ! whoPlays(whoPlaysNext(g.player))
-      stay using g.copy(player = whoPlaysNext(g.player), g.board.updated(m, g.player))
-    }
+
+    case Event(Play(m), g: GameData) =>
+      if (m < 0 || m >= g.board.length) {
+        sender() ! IllegalMove
+        stay using g
+      }
+      else if (g.board(m) == ' ') {
+        sender() ! whoPlays(whoPlaysNext(g.player))
+        stay using g.copy(player = whoPlaysNext(g.player), g.board.updated(m, g.player))
+      }
+      else {
+        sender() ! PositionOccupied
+        stay using g
+      }
+
     case x =>
       println("uhh didn't quite get that: " + x)
       stay()
@@ -58,6 +69,8 @@ object TicTacToeActor {
   sealed trait PlayingMessage extends GameResult
   case object WhoPlays extends PlayingMessage
   case class Play(position: Int) extends PlayingMessage
+  case object PositionOccupied extends PlayingMessage
+  case object IllegalMove extends PlayingMessage
   case object XPlays extends PlayingMessage
   case object OPlays extends PlayingMessage
   sealed trait WinningMessage extends GameResult
