@@ -94,6 +94,37 @@ class TicTacToeActorSpec extends TestKit(ActorSystem("test-system")) with Implic
       actorRef.stop()
     }
 
+    scenario("If noone wins, the game will still end") {
+      Given("a tictactoe actor")
+      val actorRef = TestActorRef(Props(classOf[TicTacToeActor]))
+      When("Noone wins the game")
+      actorRef ! Play(0)
+      expectMsg(timeout, OPlays)
+      actorRef ! Play(1)
+      expectMsg(timeout, XPlays)
+      actorRef ! Play(2)
+      expectMsg(timeout, OPlays)
+
+      actorRef ! Play(3)
+      expectMsg(timeout, XPlays)
+      actorRef ! Play(5)
+      expectMsg(timeout, OPlays)
+      actorRef ! Play(4)
+      expectMsg(timeout, XPlays)
+
+      actorRef ! Play(7)
+      expectMsg(timeout, OPlays)
+      actorRef ! Play(8)
+      expectMsg(timeout, XPlays)
+      actorRef ! Play(6)
+
+      Then("a NoWinner message should be returned")
+      expectMsg(timeout, NoWinner)
+      actorRef ! Play(1)
+      expectMsg(timeout, GameOver)
+      actorRef.stop()
+    }
+
   }
 
   private def playWinningGame(actorRef: ActorRef): Unit = {

@@ -151,9 +151,9 @@ curl -i http://localhost:9000/content/guid/[a guid from the content in the DB]
 ## Chapter 4 Mob Coding
 
 Implement an FSM to play out a game of tic tac toe. The FSM should have states that represent whether the game is in
-progress or has been one and needs to manage both the state of the board and who is playing.
+progress or has been won and needs to manage both the state of the board and who is playing.
 
-The FSM must help the client out so the client doesn't need to know anything about the state of the board or even who
+The FSM must help the client out so the client (by itself) doesn't need to know anything about the state of the board or even who
 the next player is. The FSM will do this by returning messages to the client, based on the state of the board. Possible
 return messages could include either X or O should make a move, either X or O won the game or the game is over and no
 player won.
