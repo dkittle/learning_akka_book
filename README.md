@@ -1,5 +1,7 @@
 # learning_akka
 
+[![Build Status](https://travis-ci.org/dkittle/learning_akka.svg?branch=master)](https://travis-ci.org/dkittle/learning_akka)
+
 [![Join the chat at https://gitter.im/dkittle/learning_akka](https://badges.gitter.im/dkittle/learning_akka.svg)]
 (https://gitter.im/dkittle/learning_akka?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
