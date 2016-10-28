@@ -20,3 +20,4 @@ unmanagedResourceDirectories in Test <+=  baseDirectory ( _ /"target/web/public/
 resolvers ++= Seq(
   "Akka Snapshot Repository" at "http://repo.akka.io/snapshots/"
 )
+
