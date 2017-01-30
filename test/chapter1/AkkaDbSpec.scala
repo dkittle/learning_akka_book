@@ -1,7 +1,7 @@
 package chapter1
 
 import scala.concurrent.duration._
-import chapter1.AkkaDb._
+import chapter1.DbActor._
 import akka.actor.ActorSystem
 import akka.testkit.{ImplicitSender, TestActorRef, TestKit}
 import org.scalatest._
@@ -9,7 +9,7 @@ import org.scalatest._
 class AkkaDbSpec extends TestKit(ActorSystem("test-system")) with ImplicitSender
   with FeatureSpecLike with GivenWhenThen with Matchers with BeforeAndAfterAll {
 
-  val actorRef = TestActorRef[AkkaDb]
+  val actorRef = TestActorRef[DbActor]
   val akkaDb = actorRef.underlyingActor
 
   val Key = "key"
@@ -29,7 +29,7 @@ class AkkaDbSpec extends TestKit(ActorSystem("test-system")) with ImplicitSender
       When("an unknkown message is sent")
       actorRef ! "foo"
       Then("the DB actor should send a specific error message back")
-      expectMsg(Timeout, AkkaDb.UnknownMessage)
+      expectMsg(Timeout, DbActor.UnknownMessage)
     }
 
     scenario("The DB actor can store values") {

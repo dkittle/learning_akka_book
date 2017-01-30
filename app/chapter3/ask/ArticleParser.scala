@@ -3,7 +3,7 @@ package chapter3.ask
 import akka.actor.{Actor, ActorLogging}
 import akka.pattern.ask
 import akka.util.Timeout
-import chapter1.AkkaDb.{GetObject, StoreObject}
+import chapter1.DbActor.{GetObject, StoreObject}
 import chapter3.{ArticleBody, HttpResponse, ParseArticle, ParseHtmlArticle}
 
 import scala.concurrent.Future

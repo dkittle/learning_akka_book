@@ -1,9 +1,6 @@
 package services
 
-import java.lang.management.ManagementFactory
-import javax.management.{MBeanServer, ObjectName}
-
-import chapter1.AkkaDb
+import chapter1.DbActor
 import chapter3.actors.{FetcherActor, ParserActor}
 import com.google.inject.AbstractModule
 import play.api.libs.concurrent.AkkaGuiceSupport
@@ -14,11 +11,7 @@ class ActorBinding(environment: Environment, configuration: Configuration) exten
     Logger.info("Starting Actors")
     bindActor[FetcherActor]("fetcher")
     bindActor[ParserActor]("parser")
-    bindActor[AkkaDb]("cache")
-
-//    val mbs: MBeanServer = ManagementFactory.getPlatformMBeanServer()
-//    val mBeanName: ObjectName = new ObjectName(FetcherActor.getClass.getName + ":type=Actor")
-//    mbs.registerMBean()
+    bindActor[DbActor]("cache")
   }
 }
 

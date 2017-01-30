@@ -5,7 +5,7 @@ import akka.actor.Status.Failure
 import scala.concurrent.duration._
 import akka.actor.{Actor, ActorLogging, ActorRef, Props}
 import akka.util.Timeout
-import chapter1.AkkaDb.{GetObject, StoreObject}
+import chapter1.DbActor.{GetObject, StoreObject}
 import chapter3.{ArticleBody, HttpResponse, ParseArticle, ParseHtmlArticle}
 
 import scala.concurrent.TimeoutException
