@@ -3,7 +3,7 @@ package chapter3.actors
 import java.net.URL
 import javax.inject.{Inject, Named}
 
-import akka.actor.{ActorRef, Props, Status}
+import akka.actor.{ActorLogging, ActorRef, Props, Status}
 import chapter3.actors.FetcherActor.FetchUrl
 import chapter3.actors.ParserActor.ParseItemXml
 
@@ -18,12 +18,13 @@ trait FetcherActorMBean {
 }
 
 
-class FetcherActor @Inject()(@Named("parser") parserRef: ActorRef) extends ActorWithJMX with FetcherActorMBean {
+class FetcherActor @Inject()(@Named("parser") parserRef: ActorRef) extends ActorWithJMX with FetcherActorMBean with ActorLogging {
 
   @volatile private[this] var lastUrl: String = ""
 
   override def receive = {
     case FetchUrl(x) => {
+      log.info(s"Fetching $x")
       callMetrics
       grabXml(x).foreach(parserRef ! ParseItemXml(_))
     }

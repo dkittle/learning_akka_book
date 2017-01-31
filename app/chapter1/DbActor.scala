@@ -1,6 +1,6 @@
 package chapter1
 
-import akka.actor.Actor
+import akka.actor.{Actor, ActorLogging}
 
 import scala.collection.mutable
 import chapter3.actors.ActorWithJMX
@@ -13,7 +13,7 @@ trait DbActorMBean {
   def getNumberEntries: Int
 }
 
-class DbActor extends ActorWithJMX with DbActorMBean {
+class DbActor extends ActorWithJMX with DbActorMBean with ActorLogging {
 
   import DbActor._
 
@@ -22,13 +22,16 @@ class DbActor extends ActorWithJMX with DbActorMBean {
   override def receive = {
     case StoreObject(k, v) =>
       callMetrics
+      log.info(s"Storing $k")
       cache.put(k, v)
       sender() ! SuccessfulOperation(k)
     case GetObject(k) =>
       callMetrics
+      log.info(s"Returning $k")
       sender() ! Result(k, cache.get(k))
     case SetIfNotExists(k, v) =>
       callMetrics
+      log.info(s"Store if new $k")
       if(cache.get(k).isEmpty) {
         cache.put(k, v)
         sender() ! SuccessfulOperation(k)
@@ -37,6 +40,7 @@ class DbActor extends ActorWithJMX with DbActorMBean {
         sender() ! FailedOperation(k)
     case Delete(k) =>
       callMetrics
+      log.info(s"Delete $k")
       if(cache.get(k).isEmpty)
         sender() ! FailedOperation(k)
       else {
@@ -45,6 +49,7 @@ class DbActor extends ActorWithJMX with DbActorMBean {
       }
     case GetKeys =>
       callMetrics
+      log.info(s"Return all keys")
       sender() ! cache.keys.toSeq
     case _ => sender() ! UnknownMessage
   }

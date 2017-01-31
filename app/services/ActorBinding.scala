@@ -8,7 +8,7 @@ import play.api.{Configuration, Environment, Logger}
 
 class ActorBinding(environment: Environment, configuration: Configuration) extends AbstractModule with AkkaGuiceSupport {
   override def configure(): Unit = {
-    Logger.info("Starting Actors")
+    Logger.debug(s"Starting Actors")
     bindActor[FetcherActor]("fetcher")
     bindActor[ParserActor]("parser")
     bindActor[DbActor]("cache")

@@ -36,7 +36,7 @@ class ArticleParser(cacheActorPath: String,
       result onComplete {
         //could use Pipe (covered later)
         case scala.util.Success(x: String) =>
-          log.info("cached result!")
+          log.debug(s"cached result!")
           senderRef ! x //cached result
         case scala.util.Success(x: ArticleBody) =>
           cacheActor ! StoreObject(uri, x.body)

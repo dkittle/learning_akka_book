@@ -9,6 +9,7 @@ import chapter1.DbActor
 import chapter1.DbActor.{GetKeys, GetObject}
 import chapter3.actors.FetcherActor.FetchUrl
 import models.{Guid, UrlToRead}
+import play.Logger
 import play.api.libs.json.{JsError, Json}
 import play.api.mvc._
 import services.StringReversingService
@@ -70,9 +71,12 @@ class Application @Inject()(stringReversingService: StringReversingService,
     }
   }
 
+  def e(s: Long) = System.currentTimeMillis() - s
+
   def retrieveGuids() = Action.async {
+    val start = System.currentTimeMillis()
     (dbRef ? GetKeys).mapTo[Seq[String]].map {
-      s => Ok(Json.obj("status" -> "OK", "result" -> s.map(Guid(_)).toString))
+      s => Logger.warn(s"got keys in ${e(start)}ms"); Ok(Json.obj("status" -> "OK", "result" -> s.map(Guid(_)).toString))
     }.recover {
       case e: Exception => Ok(Json.obj("status" -> "KO", "result" -> e.getMessage))
     }
