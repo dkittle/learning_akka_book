@@ -10,7 +10,7 @@ import chapter1.DbActor.{GetKeys, GetObject}
 import chapter3.actors.FetcherActor.FetchUrl
 import models.{Guid, UrlToRead}
 import play.Logger
-import play.api.libs.json.{JsError, Json}
+import play.api.libs.json.{JsError, JsValue, Json}
 import play.api.mvc._
 import services.StringReversingService
 
@@ -29,7 +29,7 @@ class Application @Inject()(stringReversingService: StringReversingService,
   /**
     * Chapter 2 endpoints
     */
-  def reverseString(s: String) = Action.async { implicit request =>
+  def reverseString(s: String): Action[AnyContent] = Action.async { implicit request =>
     stringReversingService.reverse(s).
       map(s => Ok(Json.obj("status" -> "OK", "result" -> s))).
       recover {
@@ -37,7 +37,7 @@ class Application @Inject()(stringReversingService: StringReversingService,
       }
   }
 
-  def reverseAll(phrase: Seq[String]) = Action.async {
+  def reverseAll(phrase: Seq[String]): Action[AnyContent] = Action.async {
     stringReversingService.reverseAll(phrase).
       map(s => Ok(Json.obj("status" -> "OK", "result" -> s.mkString(",")))).
       recover {
@@ -48,7 +48,7 @@ class Application @Inject()(stringReversingService: StringReversingService,
   /**
     * Chapter 3 exercise endpoints
     */
-  def readContentFromUrl = Action(BodyParsers.parse.json) { implicit rs =>
+  def readContentFromUrl: Action[JsValue] = Action(BodyParsers.parse.json) { implicit rs =>
     val rssResult = rs.body.validate[UrlToRead]
     rssResult.fold(
       errors => {
@@ -61,7 +61,7 @@ class Application @Inject()(stringReversingService: StringReversingService,
     )
   }
 
-  def retrieveContentByGuid(guid: String) = Action.async {
+  def retrieveContentByGuid(guid: String): Action[AnyContent] = Action.async {
     (dbRef ? GetObject(guid)).map {
       case DbActor.Result(_, Some(v: String)) => Ok(Json.obj("status" -> "OK", "result" -> v))
       case DbActor.Result(_, None) => NotFound
@@ -71,9 +71,9 @@ class Application @Inject()(stringReversingService: StringReversingService,
     }
   }
 
-  def e(s: Long) = System.currentTimeMillis() - s
+  def e(s: Long): Long = System.currentTimeMillis() - s
 
-  def retrieveGuids() = Action.async {
+  def retrieveGuids(): Action[AnyContent] = Action.async {
     val start = System.currentTimeMillis()
     (dbRef ? GetKeys).mapTo[Seq[String]].map {
       s => Logger.warn(s"got keys in ${e(start)}ms"); Ok(Json.obj("status" -> "OK", "result" -> s.map(Guid(_)).toString))
